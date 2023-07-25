@@ -1,5 +1,5 @@
 import { getAuth, signOut } from 'firebase/auth'
-import { useAuthUser, withAuthUser } from 'next-firebase-auth'
+import { withUser } from 'next-firebase-auth'
 import Head from 'next/head'
 import { authApp } from '../firebase/firebase.config'
 
@@ -19,4 +19,4 @@ const Home = () => {
     </div>
   )
 }
-export default withAuthUser()(Home)//funciona en client
+export default withUser()(Home)//funciona en client

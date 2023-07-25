@@ -4,10 +4,11 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import { getAuth, EmailAuthProvider, GoogleAuthProvider } from 'firebase/auth'
 import initAuth from '../initAuth'
 import { app } from '../firebase/firebase.config'
-import { AuthAction, withAuthUser } from 'next-firebase-auth'
+import { AuthAction, withUser} from 'next-firebase-auth'
 import style from '../styles/RegisterLogin.module.css'
 import { RiFileEditFill } from "react-icons/ri";
 import { RiStackFill } from "react-icons/ri";
+import { loginWithGoogle } from '../reducer/google'
 // Note that next-firebase-auth inits Firebase for us,
 // so we don't need to.
 initAuth()
@@ -63,17 +64,18 @@ const Auth = () => {
       </div>
       <div className=' bg-principal grid place-content-center w-[80%]'>
         <h3 className='pl-5 capitalize text-2xl font-semibold text-slate-200'>inicia sesion</h3>
-        {renderAuth ? (
+        {/* {renderAuth ? (
           <StyledFirebaseAuth
             uiConfig={firebaseAuthConfig}
             firebaseAuth={getAuth(app)}
           />
-        ) : null}
+        ) : null} */}
+        <button onClick={loginWithGoogle}>Google</button>
       </div>
     </div>
   )
 }
-export default withAuthUser({
+export default withUser({
   // whenUnauthedAfterInit:AuthAction.REDIRECT_TO_APP
   whenAuthed: AuthAction.REDIRECT_TO_APP
 })(Auth)

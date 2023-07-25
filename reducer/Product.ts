@@ -69,21 +69,16 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
             } else if (Number(productCartRepeat.amount) === Number(prod.stock)) {
               return dispatch({ type: "productToCart", payload: cart })
               // productCartRepeat.amount = productCartRepeat?.amount as number + 1
-            } else if (Number(productCartRepeat.amount) > Number(prod.stock)){
+            } else if (Number(productCartRepeat.amount) > Number(prod.stock)) {
               console.log('se pasaron')
-            productCartRepeat.amount = productCartRepeat?.amount as number -1
-            productCartRepeat.warning = "no puedes cargar mas productos"
-        // const warning = {warning:"no hay suficiente stock"}
-
-        // rta = { ...prod, ...warning }
-
-              return dispatch({ type: "warningCart", payload: "no hay suficiente stock" })
-
+              productCartRepeat.amount = productCartRepeat?.amount as number - 1
+              productCartRepeat.warning = "no puedes cargar mas productos"
+              return dispatch({ type: "productToCart", payload: cart })
             }
           }
         })
       } else {
-        const amount = { amount: 1, warning:"" }
+        const amount = { amount: 1, warning: "" }
         rta = { ...prod, ...amount }
         cart?.push(rta)
         dispatch({ type: "productToCart", payload: cart })

@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
-import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
+import { AuthAction, withUser } from 'next-firebase-auth'
 import { useGlobalContext } from '../../context/GlobalContext'
 import { RiAddCircleFill, RiEditBoxFill, RiDeleteBin5Fill } from "react-icons/ri";
 import Modal from '../../components/Modal/Modal'
@@ -117,6 +117,6 @@ const RegistroDeProductos = () => {
     </LayoutDashboard>
   )
 }
-export default withAuthUser({
+export default withUser({
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN
 })(RegistroDeProductos)

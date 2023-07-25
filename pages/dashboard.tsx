@@ -1,5 +1,5 @@
 import React from 'react'
-import { AuthAction, withAuthUser } from 'next-firebase-auth'
+import { AuthAction, withUser } from 'next-firebase-auth'
 import LayoutDashboard from '../layout/LayoutDashboard'
 
 const Dashboard = () => {
@@ -11,7 +11,7 @@ const Dashboard = () => {
   </LayoutDashboard>
   )
 }
-export default withAuthUser({
+export default withUser({
   // whenAuthed: AuthAction.RENDER
   whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN
 })(Dashboard)

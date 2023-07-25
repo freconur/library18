@@ -15,12 +15,10 @@ const initAuth = () => {
     },
     firebaseAdminInitConfig: {
       credential: {
-        projectId: 'flashcardsapi-4701e',
-        clientEmail: 'firebase-adminsdk-8ce04@flashcardsapi-4701e.iam.gserviceaccount.com',
-        // The private key must not be accessible on the client side.
+        projectId: 'library18',
+        clientEmail: 'firebase-adminsdk-sacd5@library18.iam.gserviceaccount.com',
         privateKey: process.env.FIREBASE_PRIVATE_KEY as string
       },
-      // databaseURL: 'https://my-example-app.firebaseio.com',
     },
     firebaseClientInitConfig: {
       apiKey: 'AIzaSyCSdZmm2C3PhuABwlunacsG6IeHJe9EL4g', // required
