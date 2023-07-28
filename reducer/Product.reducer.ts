@@ -10,7 +10,7 @@ export const Library = {
   brands: [] as Brands[],
   category: [] as Category[],
   productToCart: [] as ProductToCart[],
-  totalAmountToCart: 0 as Number
+  totalAmountToCart: 0 as number
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
