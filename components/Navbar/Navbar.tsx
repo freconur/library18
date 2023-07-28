@@ -1,11 +1,12 @@
 import { getAuth, signOut } from 'firebase/auth'
 import React from 'react'
-import { authApp } from '../../firebase/firebase.config'
+import { app, authApp } from '../../firebase/firebase.config'
 
 const Navbar = () => {
 
-  const auth = getAuth(authApp)
+  const auth = getAuth(app)
   const handleLogout = () => {
+    console.log('cerrando sesion')
     signOut(auth)
   }
   return (

@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
 import { useGlobalContext } from '../../context/GlobalContext';
 import TableToSell from '../../components/TableToSell/TableToSell';
+import { AuthAction, withUser } from 'next-firebase-auth';
 
 const RegistroVentas = () => {
   const focusRef = useRef<HTMLInputElement>(null)
   const initialValue = {code: ""}
   const { addProductRegisterToSell, LibraryData } = useGlobalContext()
   const [first, setfirst] = useState(initialValue)
-  const { productToCart } = LibraryData
+  const { productToCart, totalAmountToCart } = LibraryData
   const onChangeCodeProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
     setfirst({
       ...first,
@@ -27,7 +28,6 @@ const RegistroVentas = () => {
       setfirst(initialValue)
     }
   },[first.code, productToCart])
-  console.log('productToCart',productToCart)
   return (
     <LayoutDashboard>
       <>
@@ -44,7 +44,7 @@ const RegistroVentas = () => {
           </form>
           {
             productToCart &&
-          <TableToSell productToCart={productToCart}/>
+          <TableToSell productToCart={productToCart} totalAmountToCart={totalAmountToCart}/>
           }
         </div>
       </>
@@ -52,4 +52,7 @@ const RegistroVentas = () => {
   )
 }
 
-export default RegistroVentas
+// export default RegistroVentas
+export default withUser({
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN
+})(RegistroVentas)

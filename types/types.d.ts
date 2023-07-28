@@ -11,7 +11,8 @@ interface LibraryAllData {
   newProduct?: FormProductValues,
   brands?:Brands[],
   category?:Category[],
-  productToCart?:ProductToCart[]
+  productToCart?:ProductToCart[],
+  totalAmountToCart: number
 }
 interface Brands {
   id?:string

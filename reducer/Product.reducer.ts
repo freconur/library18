@@ -10,6 +10,7 @@ export const Library = {
   brands: [] as Brands[],
   category: [] as Category[],
   productToCart: [] as ProductToCart[],
+  totalAmountToCart: 0 as Number
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
@@ -33,8 +34,16 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
       }
     }
     case "productToCart": {
+      console.log('payload', action.payload)
+      let amountCart:number = 0 
+      action.payload.map(prod => {
+        let amountPerProduct:number = Number(prod.amount) * Number(prod.price) 
+        amountCart = amountCart + amountPerProduct
+      })
+      console.log('totalamount', amountCart)
       return {
         ...state,
+        totalAmountToCart:amountCart,
         productToCart: action.payload
       }
     }

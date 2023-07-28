@@ -3,46 +3,77 @@ import React from 'react'
 
 interface Props {
   productToCart: ProductToCart[] | undefined,
+  totalAmountToCart: number
 }
-const TableToSell = ({ productToCart }: Props) => {
+const TableToSell = ({ productToCart, totalAmountToCart }: Props) => {
   return (
-    <table className='w-full'>
-      <thead>
-        <tr className="p-5">
-          <th className="p-2 text-gray-500 text-left">codigo</th>
-          <th className="p-2 text-gray-500 text-left w-[768px]">descripcion</th>
-          <th className="p-2 text-gray-500 text-center">precio</th>
-          <th className="p-2 text-gray-500 text-center">marca</th>
-          <th className="p-2 text-gray-500 text-center">stock</th>
-          <th className="p-2 text-gray-500 text-center">cantidad</th>
-          <th className="p-2 text-gray-500 text-center">total</th>
-          <th className="p-2 text-gray-500 text-center"></th>
-          
-        </tr>
-      </thead>
-      <tbody>
-        {
-          productToCart &&
-          productToCart?.map(product => {
-            return (
-              <tr key={product.code}>
-                <td className='px-3'>{product.code}</td>
-                <td className='px-3'>{product.description}</td>
-                <td className='px-3'>{product.price}</td>
-                <td className='px-3'>{product.brand}</td>
-                <td className='px-3'>{product.stock}</td>
-                <td className='px-3'>{product.amount}</td>
-                <td className='px-3'>34</td>
-                {
-                  product.warning &&
-                  <td className="p-2 text-red-500 text-center">*stock</td>
-                }
+    <div className='rounded-lg shadow max-cs:mr-0 mt-5 overflow-auto'>
+      <table className='w-full rounded-lg overflow-hidden  border-[1px] '>
+        <thead className='bg-pink-600 border-b-2 border-gray-200'>
+          <tr className="p-5">
+            <th className="p-2 text-white text-left">codigo</th>
+            <th className="p-2 text-white text-left w-[768px]">descripcion</th>
+            <th className="p-2 text-white text-center">precio</th>
+            <th className="p-2 text-white text-center">marca</th>
+            <th className="p-2 text-white text-center">stock</th>
+            <th className="p-2 text-white text-center">cantidad</th>
+            <th className="p-2 text-white text-center">total</th>
+            <th className="p-2 text-white text-center"></th>
+
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {/* <tr>
+            <td>as</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td className="px-2 text-center font-semibold"></td>
+          </tr> */}
+          {
+            productToCart ?
+              productToCart?.map(product => {
+                return (
+                  <tr key={product.code}>
+                    <td className='text-gray-500 px-1 text-left'>{product.code}</td>
+                    <td className='text-gray-500 px-1 text-left'>{product.description}</td>
+                    <td className='text-gray-500 px-3 text-center'>{product.price}</td>
+                    <td className='text-gray-500 px-3 text-center'>{product.brand}</td>
+                    <td className='text-gray-500 px-3 text-center'>{product.stock}</td>
+                    <td className='text-gray-500 px-3 text-center'>{product.amount}</td>
+                    <td className='text-gray-500 px-3 text-center'>{Number(product.amount) * Number(product.price)}</td>
+                    {
+                      product.warning &&
+                      <td className="p-2 text-red-500 text-center">*stock</td>
+                    }
+                  </tr>
+                )
+              })
+              :
+              <tr>
+                <td>as</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td className="px-2 text-center font-semibold">{totalAmountToCart}</td>
               </tr>
-            )
-          })
-        }
-      </tbody>
-    </table>
+          }
+          <tr>
+            <td className='text-gray-500 px-3 text-center capitalize font-semibold'>total</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td className="px-2 text-green-500 text-center font-semibold">{totalAmountToCart}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }
 
