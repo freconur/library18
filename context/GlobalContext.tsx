@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useState } from "react";
-import { addNewProduct, findToAddProductCart, getBrands, getCategory } from "../reducer/Product";
+import { addNewProduct, deleteProductToCart, findToAddProductCart, generateSold, getBrands, getCategory } from "../reducer/Product";
 import { Library, ProductsReducer } from "../reducer/Product.reducer";
 
 interface Props {
@@ -22,7 +22,9 @@ type GlobalContextProps = {
   showUpdateBrands: ()=>void,
   category: () => void,
   brands:()=>void,
-  addProductRegisterToSell: (id:string,cart: ProductToCart[] | undefined) => void
+  addProductRegisterToSell: (id:string,cart: ProductToCart[] | undefined) => void,
+  deleteProductCart:(cart:ProductToCart[], codeFromProduct:string | undefined)=>void,
+  soldProducts :  (cart:ProductToCart[] | undefined) => void,
 }
 
 
@@ -68,6 +70,12 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
   const addProductRegisterToSell = (id:string, cart: ProductToCart[] | undefined) => {
     findToAddProductCart(dispatch,id,cart)
   }
+  const deleteProductCart = (cart:ProductToCart[], codeFromProduct:string | undefined) => {
+    deleteProductToCart(dispatch, cart, codeFromProduct)
+  }
+  const soldProducts = (cart:ProductToCart[] | undefined) => {
+    generateSold(dispatch,cart)
+  }
   return (
     <GlobalContext.Provider value={{
       LibraryData,
@@ -86,7 +94,9 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
       showModalDeleteBrands,
       category,
       brands,
-      addProductRegisterToSell
+      addProductRegisterToSell,
+      deleteProductCart,
+      soldProducts,
     }}>
       {children}
     </GlobalContext.Provider>

@@ -1,3 +1,4 @@
+
 interface FormProductValues {
   code?:string,
   description?:string,
@@ -12,7 +13,9 @@ interface LibraryAllData {
   brands?:Brands[],
   category?:Category[],
   productToCart?:ProductToCart[],
-  totalAmountToCart: number
+  totalAmountToCart: number,
+  currentlyDate: string,
+
 }
 interface Brands {
   id?:string
@@ -34,5 +37,21 @@ interface ProductToCart {
   brand?:string,
   stock?:string,
   amount?:number,
-  warning?:string
+  warning?:string,
+  active?:boolean
+}
+interface Ticket {
+  id?:string,
+  date?:Date | string,
+  timestamp: Date | string | toDate,
+  product: ProductsFromTicket[] | undefined,
+}
+interface ProductsFromTicket { 
+  code?:string,
+  amount?:number,
+  description?:string
+}
+
+interface NumberTicket {
+  ticket?:number
 }

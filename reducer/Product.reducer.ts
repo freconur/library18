@@ -1,16 +1,21 @@
+import { todayDate } from "../dates/date";
 
 type LibraryData =
   | { type: "newProduct"; payload: FormProductValues }
   | { type: "brands"; payload: Brands[] }
   | { type: "category"; payload: Category[] }
   | { type: "productToCart"; payload: ProductToCart[] }
+  | { type: "cleanCart" }
+  | { type: "resetAmountCart" }
+  | { type: "currentlyDate" }
 
 export const Library = {
   newProduct: {} as FormProductValues,
   brands: [] as Brands[],
   category: [] as Category[],
   productToCart: [] as ProductToCart[],
-  totalAmountToCart: 0 as number
+  totalAmountToCart: 0 as number,
+  currentlyDate: "" as string,
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
@@ -21,35 +26,52 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
         newProduct: action.payload
       }
     }
-    case "brands":{
+    case "brands": {
       return {
         ...state,
-        brands:action.payload
+        brands: action.payload
       }
     }
-    case "category":{
+    case "category": {
       return {
         ...state,
-        category:action.payload
+        category: action.payload
       }
     }
     case "productToCart": {
-      console.log('payload', action.payload)
-      let amountCart:number = 0 
+      let amountCart: number = 0
       action.payload.map(prod => {
-        let amountPerProduct:number = Number(prod.amount) * Number(prod.price) 
+        let amountPerProduct: number = Number(prod.amount) * Number(prod.price)
         amountCart = amountCart + amountPerProduct
       })
       console.log('totalamount', amountCart)
       return {
         ...state,
-        totalAmountToCart:amountCart,
+        totalAmountToCart: amountCart,
         productToCart: action.payload
       }
     }
-    
+    case "cleanCart": {
+      return {
+        ...state,
+        productToCart: []
+      }
+    }
+    case "resetAmountCart": {
+      return {
+        ...state,
+        totalAmountToCart: 0
+      }
+    }
+    case "currentlyDate": {
+      const date = todayDate()
+      return {
+        ...state,
+        currentlyDate: date
+      }
+    }
   }
 }
-  
+
 
 

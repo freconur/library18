@@ -1,6 +1,7 @@
 
-import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { app } from "../firebase/firebase.config";
+import { currentMonth, currentYear } from "../dates/date";
 
 const db = getFirestore(app)
 
@@ -66,10 +67,11 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
             if (Number(productCartRepeat.amount) < Number(prod.stock)) {
               console.log('menor o igual')
               return dispatch({ type: "productToCart", payload: cart })
-            } else if (Number(productCartRepeat.amount) === Number(prod.stock)) {
+            }
+            if (Number(productCartRepeat.amount) === Number(prod.stock)) {
               return dispatch({ type: "productToCart", payload: cart })
-              // productCartRepeat.amount = productCartRepeat?.amount as number + 1
-            } else if (Number(productCartRepeat.amount) > Number(prod.stock)) {
+            }
+            if (Number(productCartRepeat.amount) > Number(prod.stock)) {
               console.log('se pasaron')
               productCartRepeat.amount = productCartRepeat?.amount as number - 1
               productCartRepeat.warning = "no puedes cargar mas productos"
@@ -78,15 +80,79 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
           }
         })
       } else {
-        const amount = { amount: 1, warning: "" }
-        rta = { ...prod, ...amount }
-        cart?.push(rta)
-        dispatch({ type: "productToCart", payload: cart })
-        console.log("Document data:", docSnap.data());
+        console.log('nuevo en el carrito')
+        if (prod?.stock === 0) {
+          console.log('cero stock')
+
+          // const active = { active: false }
+          const amount = { amount: prod?.stock }
+          rta = { ...prod, ...amount }
+          cart?.push(rta)
+          // rta = { ...active }
+          dispatch({ type: "productToCart", payload: cart })
+
+        } else {
+          const amount = { amount: 1, warning: "" }
+          rta = { ...prod, ...amount }
+          cart?.push(rta)
+          dispatch({ type: "productToCart", payload: cart })
+        }
       }
-      // prod['amount'] = 1 
 
     }
 
   }
+}
+
+export const deleteProductToCart = (dispatch: (action: any) => void, cart: ProductToCart[], codeFromProduct: string | undefined) => {
+  console.log('cart', cart)
+  console.log('codeFromProduct', codeFromProduct)
+  const cartAfterToDelete = cart.filter(prod => prod.code !== codeFromProduct)
+  console.log('cartAfterToDelete', cartAfterToDelete)
+  return dispatch({ type: "productToCart", payload: cartAfterToDelete })
+
+}
+
+export const addProductFromCartToTicket = async (ticket: Ticket) => {
+  const docRef = doc(db, "/ticket", "1gZJTbl4yu6S8oD9a1En");
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const numeroTicket = docSnap.data().ticket + 1
+    console.log('numeroTicket', numeroTicket)
+    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}`, `${numeroTicket}`), ticket)
+    await updateDoc(docRef, {
+      ticket: numeroTicket
+    });
+  }
+}
+
+export const generateSold = async (dispatch: (action: any) => void, cart: ProductToCart[] | undefined) => {
+  const ticket = {
+    timestamp: Timestamp.fromDate(new Date()),
+    product: cart
+  }
+  cart?.map(async (item) => {
+    const ref = doc(db, "products", item?.code as string);
+    const docSnap = await getDoc(ref);
+    console.log('docSnap', docSnap.data())
+    const stockSobrante = Number(item.stock) - Number(item.amount)
+    if (stockSobrante === 0) {
+      await updateDoc(ref, {
+        stock: Number(item.stock) - Number(item.amount),
+        active: false
+      })
+
+    } else {
+      await updateDoc(ref, { stock: Number(item.stock) - Number(item.amount) })
+    }
+
+  })
+  await addProductFromCartToTicket(
+    {
+      timestamp: Timestamp.fromDate(new Date()),
+      product: cart
+    }
+  )
+  dispatch({ type: "cleanCart" })
+  dispatch({ type: "resetAmountCart" })
 }
