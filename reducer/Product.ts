@@ -1,7 +1,7 @@
 
 import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { app } from "../firebase/firebase.config";
-import { currentMonth, currentYear } from "../dates/date";
+import { currentDate, currentMonth, currentYear } from "../dates/date";
 
 const db = getFirestore(app)
 
@@ -119,7 +119,9 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
   if (docSnap.exists()) {
     const numeroTicket = docSnap.data().ticket + 1
     console.log('numeroTicket', numeroTicket)
-    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}`, `${numeroTicket}`), ticket)
+    // await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}`, `${numeroTicket}`), ticket)
+    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}`), {ticket:"ticket"})
+    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}/${currentDate()}`, `${numeroTicket}`), ticket)
     await updateDoc(docRef, {
       ticket: numeroTicket
     });

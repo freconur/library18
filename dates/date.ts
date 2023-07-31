@@ -24,3 +24,7 @@ export const currentYear = () => {
   const date = new Date()
   return `${date.getFullYear()}`
 }
+export const currentDate = () => {
+  const date = new Date()
+  return `${date.getDate()}`
+}
