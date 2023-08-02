@@ -15,7 +15,7 @@ interface LibraryAllData {
   productToCart?:ProductToCart[],
   totalAmountToCart: number,
   currentlyDate: string,
-
+  loaderToSell: boolean
 }
 interface Brands {
   id?:string

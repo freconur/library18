@@ -50,6 +50,7 @@ export const addNewBrand = async (brandData: Brand) => {
 }
 
 export const findToAddProductCart = async (dispatch: (action: any) => void, codeProduct: string, cart: ProductToCart[] | undefined) => {
+
   let rta: ProductToCart
   if (codeProduct === null || undefined) {
     return null
@@ -57,47 +58,60 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
     const docRef = doc(db, "products", codeProduct); // busco en la base de datos
     const docSnap = await getDoc(docRef);
     const prod = docSnap?.data()
-    if (docSnap.exists()) {
-      //compruebo si se encuentra en el array cart
-      const productCartRepeat = cart?.find(prod => prod.code === codeProduct)
-      if (productCartRepeat) {
-        cart?.map(prod => {
-          if (prod.code === productCartRepeat.code) {
-            productCartRepeat.amount = productCartRepeat?.amount as number + 1
-            if (Number(productCartRepeat.amount) < Number(prod.stock)) {
-              console.log('menor o igual')
-              return dispatch({ type: "productToCart", payload: cart })
-            }
-            if (Number(productCartRepeat.amount) === Number(prod.stock)) {
-              return dispatch({ type: "productToCart", payload: cart })
-            }
-            if (Number(productCartRepeat.amount) > Number(prod.stock)) {
-              console.log('se pasaron')
-              productCartRepeat.amount = productCartRepeat?.amount as number - 1
-              productCartRepeat.warning = "no puedes cargar mas productos"
-              return dispatch({ type: "productToCart", payload: cart })
-            }
-          }
-        })
-      } else {
-        console.log('nuevo en el carrito')
-        if (prod?.stock === 0) {
-          console.log('cero stock')
+    try {
+      if (docSnap.exists()) {
+        dispatch({ type: "loaderToSell", payload:true})
+        //compruebo si se encuentra en el array cart
+        const productCartRepeat = cart?.find(prod => prod.code === codeProduct)
+        if (productCartRepeat) {
+          cart?.map(prod => {
+            if (prod.code === productCartRepeat.code) {
+              productCartRepeat.amount = productCartRepeat?.amount as number + 1
+              if (Number(productCartRepeat.amount) < Number(prod.stock)) {
+                console.log('menor o igual')
+                dispatch({ type: "productToCart", payload: cart })
+            dispatch({ type: "loaderToSell", payload:false})
 
-          // const active = { active: false }
-          const amount = { amount: prod?.stock }
-          rta = { ...prod, ...amount }
-          cart?.push(rta)
-          // rta = { ...active }
-          dispatch({ type: "productToCart", payload: cart })
+              }
+              if (Number(productCartRepeat.amount) === Number(prod.stock)) {
+                dispatch({ type: "productToCart", payload: cart })
+            dispatch({ type: "loaderToSell", payload:false})
 
+              }
+              if (Number(productCartRepeat.amount) > Number(prod.stock)) {
+                console.log('se pasaron')
+                productCartRepeat.amount = productCartRepeat?.amount as number - 1
+                productCartRepeat.warning = "no puedes cargar mas productos"
+                dispatch({ type: "productToCart", payload: cart })
+            dispatch({ type: "loaderToSell", payload:false})
+
+              }
+            }
+          })
         } else {
-          const amount = { amount: 1, warning: "" }
-          rta = { ...prod, ...amount }
-          cart?.push(rta)
-          dispatch({ type: "productToCart", payload: cart })
+          console.log('nuevo en el carrito')
+          if (prod?.stock === 0) {
+            console.log('cero stock')
+  
+            // const active = { active: false }
+            const amount = { amount: prod?.stock }
+            rta = { ...prod, ...amount }
+            cart?.push(rta)
+            // rta = { ...active }
+            dispatch({ type: "productToCart", payload: cart })
+            dispatch({ type: "loaderToSell", payload:false})
+  
+          } else {
+            const amount = { amount: 1, warning: "" }
+            rta = { ...prod, ...amount }
+            cart?.push(rta)
+            dispatch({ type: "productToCart", payload: cart })
+            dispatch({ type: "loaderToSell", payload:false})
+          }
         }
+  
       }
+    }catch {
 
     }
 

@@ -8,6 +8,7 @@ type LibraryData =
   | { type: "cleanCart" }
   | { type: "resetAmountCart" }
   | { type: "currentlyDate" }
+  | { type: "loaderToSell"; payload:boolean }
 
 export const Library = {
   newProduct: {} as FormProductValues,
@@ -16,6 +17,7 @@ export const Library = {
   productToCart: [] as ProductToCart[],
   totalAmountToCart: 0 as number,
   currentlyDate: "" as string,
+  loaderToSell: false as boolean,
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
@@ -68,6 +70,13 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
       return {
         ...state,
         currentlyDate: date
+      }
+    }
+    case "loaderToSell":{
+      console.log('entrando al reducer',action.payload)
+      return {
+        ...state,
+        loaderToSell: action.payload
       }
     }
   }

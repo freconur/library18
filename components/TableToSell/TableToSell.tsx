@@ -1,10 +1,11 @@
 import React from 'react'
 import { RiDeleteBin7Fill } from "react-icons/ri";
 import { useGlobalContext } from '../../context/GlobalContext';
+import { RiLoader4Line } from "react-icons/ri";
 
 interface Props {
   productToCart: ProductToCart[] | undefined,
-  totalAmountToCart: number
+  totalAmountToCart: number,
 }
 const TableToSell = ({ productToCart, totalAmountToCart }: Props) => {
 
@@ -28,6 +29,7 @@ const TableToSell = ({ productToCart, totalAmountToCart }: Props) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
+          
           {
             productToCart &&
               productToCart.length > 0
@@ -51,6 +53,7 @@ const TableToSell = ({ productToCart, totalAmountToCart }: Props) => {
                       product.warning &&
                       <td className="p-2 text-red-500 text-center">*stock</td>
                     }
+
                   </tr>
                 )
               })

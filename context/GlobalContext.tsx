@@ -25,6 +25,7 @@ type GlobalContextProps = {
   addProductRegisterToSell: (id:string,cart: ProductToCart[] | undefined) => void,
   deleteProductCart:(cart:ProductToCart[], codeFromProduct:string | undefined)=>void,
   soldProducts :  (cart:ProductToCart[] | undefined) => void,
+  stateLoader: (state:boolean) => void,
 }
 
 
@@ -34,6 +35,7 @@ export function GlobalcontextProdiver({ children }: Props) {
 
   const [LibraryData, dispatch] = useReducer(ProductsReducer, Library)
   const [showModalCategory, setShowModalCategory] = useState<boolean>(false)
+  const [loaderToSell, setLoaderToSell] = useState<boolean>(false)
   const [showModalUpdateCategory, setShowModalUpdateCategory] = useState<boolean>(false)
   const [showModalDeleteCategory, setShowModalDeleteCategory] = useState<boolean>(false)
 const [showModalBrands, setShowModalBrands] = useState<boolean>(false)
@@ -76,6 +78,15 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
   const soldProducts = (cart:ProductToCart[] | undefined) => {
     generateSold(dispatch,cart)
   }
+  const stateLoader = (state:boolean) => {
+    // if(state === true){
+      dispatch({ type: "loaderToSell", payload:state})
+      // LibraryData.loaderToSell = false
+      // setLoaderToSell(state)
+      // return loaderToSell
+    // } 
+    
+  }
   return (
     <GlobalContext.Provider value={{
       LibraryData,
@@ -97,6 +108,7 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
       addProductRegisterToSell,
       deleteProductCart,
       soldProducts,
+      stateLoader
     }}>
       {children}
     </GlobalContext.Provider>
