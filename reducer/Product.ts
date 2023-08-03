@@ -58,63 +58,54 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
     const docRef = doc(db, "products", codeProduct); // busco en la base de datos
     const docSnap = await getDoc(docRef);
     const prod = docSnap?.data()
-    try {
-      if (docSnap.exists()) {
-        dispatch({ type: "loaderToSell", payload:true})
-        //compruebo si se encuentra en el array cart
-        const productCartRepeat = cart?.find(prod => prod.code === codeProduct)
-        if (productCartRepeat) {
-          cart?.map(prod => {
-            if (prod.code === productCartRepeat.code) {
-              productCartRepeat.amount = productCartRepeat?.amount as number + 1
-              if (Number(productCartRepeat.amount) < Number(prod.stock)) {
-                console.log('menor o igual')
-                dispatch({ type: "productToCart", payload: cart })
-            dispatch({ type: "loaderToSell", payload:false})
 
-              }
-              if (Number(productCartRepeat.amount) === Number(prod.stock)) {
-                dispatch({ type: "productToCart", payload: cart })
-            dispatch({ type: "loaderToSell", payload:false})
+    if (docSnap.exists()) {
+      dispatch({ type: "productNotFound"})
 
-              }
-              if (Number(productCartRepeat.amount) > Number(prod.stock)) {
-                console.log('se pasaron')
-                productCartRepeat.amount = productCartRepeat?.amount as number - 1
-                productCartRepeat.warning = "no puedes cargar mas productos"
-                dispatch({ type: "productToCart", payload: cart })
-            dispatch({ type: "loaderToSell", payload:false})
-
-              }
+      dispatch({ type: "loaderToSell", payload: true })
+      //compruebo si se encuentra en el array cart
+      const productCartRepeat = cart?.find(prod => prod.code === codeProduct)
+      if (productCartRepeat) {
+        cart?.map(prod => {
+          if (prod.code === productCartRepeat.code) {
+            productCartRepeat.amount = productCartRepeat?.amount as number + 1
+            if (Number(productCartRepeat.amount) < Number(prod.stock)) {
+              dispatch({ type: "productToCart", payload: cart })
+              dispatch({ type: "loaderToSell", payload: false })
             }
-          })
-        } else {
-          console.log('nuevo en el carrito')
-          if (prod?.stock === 0) {
-            console.log('cero stock')
-  
-            // const active = { active: false }
-            const amount = { amount: prod?.stock }
-            rta = { ...prod, ...amount }
-            cart?.push(rta)
-            // rta = { ...active }
-            dispatch({ type: "productToCart", payload: cart })
-            dispatch({ type: "loaderToSell", payload:false})
-  
-          } else {
-            const amount = { amount: 1, warning: "" }
-            rta = { ...prod, ...amount }
-            cart?.push(rta)
-            dispatch({ type: "productToCart", payload: cart })
-            dispatch({ type: "loaderToSell", payload:false})
+            if (Number(productCartRepeat.amount) === Number(prod.stock)) {
+              dispatch({ type: "productToCart", payload: cart })
+              dispatch({ type: "loaderToSell", payload: false })
+            }
+            if (Number(productCartRepeat.amount) > Number(prod.stock)) {
+              console.log('se pasaron')
+              productCartRepeat.amount = productCartRepeat?.amount as number - 1
+              productCartRepeat.warning = "no puedes cargar mas productos"
+              dispatch({ type: "productToCart", payload: cart })
+              dispatch({ type: "loaderToSell", payload: false })
+            }
           }
+        })
+      } else {
+        if (prod?.stock === 0) {
+          const amount = { amount: prod?.stock }
+          rta = { ...prod, ...amount }
+          cart?.push(rta)
+          dispatch({ type: "productToCart", payload: cart })
+          dispatch({ type: "loaderToSell", payload: false })
         }
-  
+        if (prod?.stock > 0) {
+          const amount = { amount: 1, warning: "" }
+          rta = { ...prod, ...amount }
+          cart?.push(rta)
+          dispatch({ type: "productToCart", payload: cart })
+          dispatch({ type: "loaderToSell", payload: false })
+        }
       }
-    }catch {
-
+    } else {
+      dispatch({ type: "loaderToSell", payload: false })
+      dispatch({ type: "productNotFound", payload:"not found" })
     }
-
   }
 }
 
@@ -134,7 +125,7 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
     const numeroTicket = docSnap.data().ticket + 1
     console.log('numeroTicket', numeroTicket)
     // await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}`, `${numeroTicket}`), ticket)
-    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}`), {ticket:"ticket"})
+    await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}`), { ticket: "ticket" })
     await setDoc(doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}/${currentDate()}`, `${numeroTicket}`), ticket)
     await updateDoc(docRef, {
       ticket: numeroTicket
@@ -143,6 +134,7 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
 }
 
 export const generateSold = async (dispatch: (action: any) => void, cart: ProductToCart[] | undefined) => {
+  dispatch({ type: "generateSold", payload: true })
   const ticket = {
     timestamp: Timestamp.fromDate(new Date()),
     product: cart
@@ -157,18 +149,29 @@ export const generateSold = async (dispatch: (action: any) => void, cart: Produc
         stock: Number(item.stock) - Number(item.amount),
         active: false
       })
+      await addProductFromCartToTicket(
+        {
+          timestamp: Timestamp.fromDate(new Date()),
+          product: cart
+        }
+      )
+      dispatch({ type: "cleanCart" })
+      dispatch({ type: "resetAmountCart" })
+      dispatch({ type: "generateSold", payload: false })
 
     } else {
       await updateDoc(ref, { stock: Number(item.stock) - Number(item.amount) })
+      await addProductFromCartToTicket(
+        {
+          timestamp: Timestamp.fromDate(new Date()),
+          product: cart
+        }
+      )
+      dispatch({ type: "cleanCart" })
+      dispatch({ type: "resetAmountCart" })
+      dispatch({ type: "generateSold", payload: false })
+
     }
 
   })
-  await addProductFromCartToTicket(
-    {
-      timestamp: Timestamp.fromDate(new Date()),
-      product: cart
-    }
-  )
-  dispatch({ type: "cleanCart" })
-  dispatch({ type: "resetAmountCart" })
 }

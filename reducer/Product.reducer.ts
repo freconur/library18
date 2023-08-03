@@ -8,7 +8,9 @@ type LibraryData =
   | { type: "cleanCart" }
   | { type: "resetAmountCart" }
   | { type: "currentlyDate" }
+  | { type: "productNotFound"; payload: string}
   | { type: "loaderToSell"; payload:boolean }
+  | { type: "generateSold"; payload:boolean }
 
 export const Library = {
   newProduct: {} as FormProductValues,
@@ -18,6 +20,8 @@ export const Library = {
   totalAmountToCart: 0 as number,
   currentlyDate: "" as string,
   loaderToSell: false as boolean,
+  generateSold: false as boolean,
+  productNotFound:"" as string
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
@@ -46,7 +50,6 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
         let amountPerProduct: number = Number(prod.amount) * Number(prod.price)
         amountCart = amountCart + amountPerProduct
       })
-      console.log('totalamount', amountCart)
       return {
         ...state,
         totalAmountToCart: amountCart,
@@ -73,10 +76,28 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
       }
     }
     case "loaderToSell":{
-      console.log('entrando al reducer',action.payload)
       return {
         ...state,
         loaderToSell: action.payload
+      }
+    }
+    case "productNotFound": {
+      if(action.payload === "not found") {
+        return {
+          ...state,
+          productNotFound:"no se encontro producto"
+        }
+      } else {
+        return {
+          ...state,
+          productNotFound:""
+        }
+      }
+    }
+    case "generateSold":{
+      return {
+        ...state,
+        generateSold: action.payload
       }
     }
   }

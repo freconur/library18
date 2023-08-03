@@ -9,23 +9,24 @@ type GlobalContextProps = {
   LibraryData: LibraryAllData,
   addProduct: (productData: FormProductValues) => void,
   showCategory: () => void,
-  showBrands:() => void,
+  showBrands: () => void,
   showModalCategory: boolean,
-  showModalUpdateCategory:boolean,
-  showModalDeleteCategory:boolean,
+  showModalUpdateCategory: boolean,
+  showModalDeleteCategory: boolean,
   showModalBrands: boolean,
-  showModalUpdateBrands:boolean,
-  showModalDeleteBrands:boolean,
+  showModalUpdateBrands: boolean,
+  showModalDeleteBrands: boolean,
   showUpdateCategory: () => void,
   showDeleteCategory: () => void,
-  showDeleteBrands: ()=>void,
-  showUpdateBrands: ()=>void,
+  showDeleteBrands: () => void,
+  showUpdateBrands: () => void,
   category: () => void,
-  brands:()=>void,
-  addProductRegisterToSell: (id:string,cart: ProductToCart[] | undefined) => void,
-  deleteProductCart:(cart:ProductToCart[], codeFromProduct:string | undefined)=>void,
-  soldProducts :  (cart:ProductToCart[] | undefined) => void,
-  stateLoader: (state:boolean) => void,
+  brands: () => void,
+  addProductRegisterToSell: (id: string, cart: ProductToCart[] | undefined) => void,
+  deleteProductCart: (cart: ProductToCart[], codeFromProduct: string | undefined) => void,
+  soldProducts: (cart: ProductToCart[] | undefined) => void,
+  stateLoader: (state: boolean) => void,
+  stateGenerateSoldLoader: (state: boolean) => void
 }
 
 
@@ -35,12 +36,11 @@ export function GlobalcontextProdiver({ children }: Props) {
 
   const [LibraryData, dispatch] = useReducer(ProductsReducer, Library)
   const [showModalCategory, setShowModalCategory] = useState<boolean>(false)
-  const [loaderToSell, setLoaderToSell] = useState<boolean>(false)
   const [showModalUpdateCategory, setShowModalUpdateCategory] = useState<boolean>(false)
   const [showModalDeleteCategory, setShowModalDeleteCategory] = useState<boolean>(false)
-const [showModalBrands, setShowModalBrands] = useState<boolean>(false)
-const [showModalUpdateBrands, setShowModalUpdateBrands] = useState<boolean>(false)
-const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(false)
+  const [showModalBrands, setShowModalBrands] = useState<boolean>(false)
+  const [showModalUpdateBrands, setShowModalUpdateBrands] = useState<boolean>(false)
+  const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(false)
 
   const addProduct = (productData: FormProductValues) => {
     addNewProduct(dispatch, productData)
@@ -69,23 +69,20 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
   const brands = () => {
     getBrands(dispatch)
   }
-  const addProductRegisterToSell = (id:string, cart: ProductToCart[] | undefined) => {
-    findToAddProductCart(dispatch,id,cart)
+  const addProductRegisterToSell = (id: string, cart: ProductToCart[] | undefined) => {
+    findToAddProductCart(dispatch, id, cart)
   }
-  const deleteProductCart = (cart:ProductToCart[], codeFromProduct:string | undefined) => {
+  const deleteProductCart = (cart: ProductToCart[], codeFromProduct: string | undefined) => {
     deleteProductToCart(dispatch, cart, codeFromProduct)
   }
-  const soldProducts = (cart:ProductToCart[] | undefined) => {
-    generateSold(dispatch,cart)
+  const soldProducts = (cart: ProductToCart[] | undefined) => {
+    generateSold(dispatch, cart)
   }
-  const stateLoader = (state:boolean) => {
-    // if(state === true){
-      dispatch({ type: "loaderToSell", payload:state})
-      // LibraryData.loaderToSell = false
-      // setLoaderToSell(state)
-      // return loaderToSell
-    // } 
-    
+  const stateLoader = (state: boolean) => {
+    dispatch({ type: "loaderToSell", payload: state })
+  }
+  const stateGenerateSoldLoader = (state: boolean) => {
+    dispatch({ type: "generateSold", payload: state })
   }
   return (
     <GlobalContext.Provider value={{
@@ -108,7 +105,8 @@ const [showModalDeleteBrands, setShowModalDeleteBrands] = useState<boolean>(fals
       addProductRegisterToSell,
       deleteProductCart,
       soldProducts,
-      stateLoader
+      stateLoader,
+      stateGenerateSoldLoader
     }}>
       {children}
     </GlobalContext.Provider>
