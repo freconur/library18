@@ -17,7 +17,8 @@ interface LibraryAllData {
   currentlyDate: string,
   loaderToSell: boolean,
   productNotFound:string,
-  generateSold: boolean
+  generateSold: boolean,
+  loaderRegisterProduct:boolean
 }
 interface Brands {
   id?:string

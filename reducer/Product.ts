@@ -6,8 +6,11 @@ import { currentDate, currentMonth, currentYear } from "../dates/date";
 const db = getFirestore(app)
 
 export const addNewProduct = async (dispatch: (action: any) => void, productData: FormProductValues) => {
-  await setDoc(doc(db, "products", `${productData.code}`), productData);
-  dispatch({ type: "newProduct", payload: productData })
+  await setDoc(doc(db, "products", `${productData.code}`), productData)
+  .then(r => {
+    dispatch({ type: "newProduct", payload: productData })
+    dispatch({ type: "loaderRegisterProduct", payload: false })
+  })
 }
 
 export const getBrands = (dispatch: (action: any) => void) => {

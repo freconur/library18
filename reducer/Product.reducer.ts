@@ -11,6 +11,7 @@ type LibraryData =
   | { type: "productNotFound"; payload: string}
   | { type: "loaderToSell"; payload:boolean }
   | { type: "generateSold"; payload:boolean }
+  | { type: "loaderRegisterProduct"; payload:boolean }
 
 export const Library = {
   newProduct: {} as FormProductValues,
@@ -21,11 +22,18 @@ export const Library = {
   currentlyDate: "" as string,
   loaderToSell: false as boolean,
   generateSold: false as boolean,
-  productNotFound:"" as string
+  productNotFound:"" as string,
+  loaderRegisterProduct:false as boolean,
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
   switch (action.type) {
+    case "loaderRegisterProduct":{
+      return {
+        ...state,
+        loaderRegisterProduct:action.payload
+      }
+    }
     case "newProduct": {
       return {
         ...state,

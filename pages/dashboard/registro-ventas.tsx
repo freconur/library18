@@ -5,6 +5,7 @@ import TableToSell from '../../components/TableToSell/TableToSell';
 import { AuthAction, withUser } from 'next-firebase-auth';
 import { todayDate } from '../../dates/date';
 import { RiLoader4Line } from "react-icons/ri";
+import styles from '../../styles/registtro-ventas.module.css'
 const RegistroVentas = () => {
   const focusRef = useRef<HTMLInputElement>(null)
   const initialValue = { code: "" }
@@ -38,12 +39,16 @@ const RegistroVentas = () => {
           </div>
           <form>
             <div>
-              <label>codigo de barra</label>
-              <input ref={focusRef} autoFocus value={codeBar.code} onChange={onChangeCodeProduct} name="code" type="text" className='pl-2 border-blue-500 w-full border-[1px] rounded-lg' />
+              <label className='text-slate-400 capitalize font-semibold'>codigo de barra</label>
+              <input ref={focusRef} autoFocus value={codeBar.code} 
+              onChange={onChangeCodeProduct} name="code" type="text" 
+              // className={styles.inputCode} 
+              className='pl-2 border-blue-500 w-full border-[1px] rounded-lg h-[40px] outline-none focus-visible:border-[1px] focus-visible:border-blue-500' 
+              />
             </div>
-            <div>
-              <label>codigo de barra</label>
-              <input type="text" className='border-blue-500 w-full border-[1px] rounded-lg' />
+            <div className='mt-2'>
+              {/* <label>codigo de barra</label> */}
+              <input type="text" className='h-[40px] border-blue-500 w-full border-[1px] rounded-lg' />
             </div>
           </form>
           {productNotFound

@@ -26,7 +26,8 @@ type GlobalContextProps = {
   deleteProductCart: (cart: ProductToCart[], codeFromProduct: string | undefined) => void,
   soldProducts: (cart: ProductToCart[] | undefined) => void,
   stateLoader: (state: boolean) => void,
-  stateGenerateSoldLoader: (state: boolean) => void
+  stateGenerateSoldLoader: (state: boolean) => void,
+  loaderRegisterProducts : (state:boolean) => void,
 }
 
 
@@ -84,6 +85,9 @@ export function GlobalcontextProdiver({ children }: Props) {
   const stateGenerateSoldLoader = (state: boolean) => {
     dispatch({ type: "generateSold", payload: state })
   }
+  const loaderRegisterProducts = (state:boolean) => {
+    dispatch({type:"loaderRegisterProduct", payload:state})
+  } 
   return (
     <GlobalContext.Provider value={{
       LibraryData,
@@ -106,7 +110,8 @@ export function GlobalcontextProdiver({ children }: Props) {
       deleteProductCart,
       soldProducts,
       stateLoader,
-      stateGenerateSoldLoader
+      stateGenerateSoldLoader,
+      loaderRegisterProducts
     }}>
       {children}
     </GlobalContext.Provider>
