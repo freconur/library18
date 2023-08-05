@@ -27,6 +27,13 @@ const RegistroDeProductos = () => {
     category()
   }, [error, loaderRegisterProduct])
   console.log('loaderRegisterProduct', loaderRegisterProduct)
+
+  const testEnter = (e:React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('key', e.key)
+    if(e.key === 'Enter') {
+      e.preventDefault()
+    }
+  }
   return (
     <LayoutDashboard>
       <>
@@ -38,7 +45,7 @@ const RegistroDeProductos = () => {
           <form className='grid gap-3 w-full' onSubmit={handleSubmit}>
             <div className='w-full'>
               <label className={styles.labelForm}>Codigo de barra de producto</label>
-              <input onChange={handleProductValues} value={form.code} name="code" className={styles.inputCode} type="text" />
+              <input onKeyDown={testEnter} onChange={handleProductValues} value={form.code} name="code" className={styles.inputCode} type="text" />
               {error?.code && 
               <div className='text-red-500'>
                  *{error?.code}

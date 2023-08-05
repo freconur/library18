@@ -16,6 +16,7 @@ const useFormRegisterProduct = (formValues: FormProductValues, onValidate: (form
   }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    
     setLoading(true)
     let err = onValidate(form)
     if (err === null) {
