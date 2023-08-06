@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
 import { AuthAction, withUser } from 'next-firebase-auth'
 import { useGlobalContext } from '../../context/GlobalContext'
@@ -18,11 +18,16 @@ const initialStateValues: FormProductValues = {
   stock:""
 }
 const RegistroDeProductos = () => {
+  const focusRef = useRef<HTMLInputElement>(null)
+
   const { LibraryData, showCategory, showUpdateCategory, category, brands, showDeleteCategory, showBrands, showUpdateBrands, showDeleteBrands } = useGlobalContext()
   const { loaderRegisterProduct } = LibraryData
   const { form, handleProductValues, handleSubmit, loading, error } = useFormRegisterProduct(initialStateValues,onValidate);
 
   useEffect(() => {
+    if (focusRef.current) {
+      focusRef.current.focus();
+    }
     brands()
     category()
   }, [error, loaderRegisterProduct])
@@ -33,6 +38,10 @@ const RegistroDeProductos = () => {
     if(e.key === 'Enter') {
       e.preventDefault()
     }
+    
+      new KeyboardEvent('keydown', {
+        'key': 'Tab'
+      })
   }
   return (
     <LayoutDashboard>
@@ -45,7 +54,7 @@ const RegistroDeProductos = () => {
           <form className='grid gap-3 w-full' onSubmit={handleSubmit}>
             <div className='w-full'>
               <label className={styles.labelForm}>Codigo de barra de producto</label>
-              <input onKeyDown={testEnter} onChange={handleProductValues} value={form.code} name="code" className={styles.inputCode} type="text" />
+              <input ref={focusRef}  onKeyDown={testEnter} onChange={handleProductValues} value={form.code} name="code" className={styles.inputCode} type="text" />
               {error?.code && 
               <div className='text-red-500'>
                  *{error?.code}

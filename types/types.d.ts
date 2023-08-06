@@ -18,7 +18,10 @@ interface LibraryAllData {
   loaderToSell: boolean,
   productNotFound:string,
   generateSold: boolean,
-  loaderRegisterProduct:boolean
+  loaderRegisterProduct:boolean,
+  dailySale?:number,
+  dailyTicket?:number,
+  averageTicket?:number
 }
 interface Brands {
   id?:string

@@ -1,16 +1,17 @@
 
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
 import { app } from "../firebase/firebase.config";
 import { currentDate, currentMonth, currentYear } from "../dates/date";
 
 const db = getFirestore(app)
+const YEAR_MONTH = `${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}`
 
 export const addNewProduct = async (dispatch: (action: any) => void, productData: FormProductValues) => {
   await setDoc(doc(db, "products", `${productData.code}`), productData)
-  .then(r => {
-    dispatch({ type: "newProduct", payload: productData })
-    dispatch({ type: "loaderRegisterProduct", payload: false })
-  })
+    .then(r => {
+      dispatch({ type: "newProduct", payload: productData })
+      dispatch({ type: "loaderRegisterProduct", payload: false })
+    })
 }
 
 export const getBrands = (dispatch: (action: any) => void) => {
@@ -63,7 +64,7 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
     const prod = docSnap?.data()
 
     if (docSnap.exists()) {
-      dispatch({ type: "productNotFound"})
+      dispatch({ type: "productNotFound" })
 
       dispatch({ type: "loaderToSell", payload: true })
       //compruebo si se encuentra en el array cart
@@ -107,7 +108,7 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
       }
     } else {
       dispatch({ type: "loaderToSell", payload: false })
-      dispatch({ type: "productNotFound", payload:"not found" })
+      dispatch({ type: "productNotFound", payload: "not found" })
     }
   }
 }
@@ -136,45 +137,72 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
   }
 }
 
+export const dailySale = (dispatch: (action: any) => void) => {
+  const dailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0")
+
+  onSnapshot(dailySaleRef, (snapshot) => {
+    console.log("amount", snapshot.data()?.amount)
+    dispatch({ type: "dailySale", payload: snapshot.data()?.amount })
+  })
+}
+
+export const updatedailySale = async (totalAmountOfCart: number) => {
+  const updatedailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0");
+  const docSnap = await getDoc(updatedailySaleRef)
+  if (docSnap.exists()) {
+    const currentlyDailySale = Number(docSnap.data().amount) + totalAmountOfCart
+    console.log('updatedailySaleRef', docSnap.data().amount)
+    await updateDoc(updatedailySaleRef, { amount: currentlyDailySale })
+  }
+}
+
+export const dailyTicket = async (dispatch: (action: any) => void) => {
+  // const q = query(collection(db, "cities")
+  const res = query(collection(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${YEAR_MONTH}/${currentDate()}`));
+  const docSnap = await getDocs(res)
+  let totalAmountDailySale:number = 0
+  docSnap.docs.forEach(ticket => {
+    console.log('ticket', ticket.data())
+    const productsOfTicket = ticket.data().product
+    productsOfTicket.map((item:ProductToCart) => {
+
+      totalAmountDailySale = totalAmountDailySale + (Number(item.amount) * Number(item.price))
+    })
+  })
+  console.log('totalAmountDailySale', totalAmountDailySale)
+  console.log('dailyTicket', docSnap)
+  const averageTicket = totalAmountDailySale / docSnap.size
+  dispatch({type:"dailyTicket", payload:docSnap.size})
+  dispatch({type:"averageTicket", payload:averageTicket})
+  // const dailySaleRef = doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${YEAR_MONTH}/${currentDate()}`)
+  // const docSnap = await getDoc(dailySaleRef)
+  // console.log('dailySaleRef', dailySaleRef)
+  // console.log('docSnap', docSnap)
+}
 export const generateSold = async (dispatch: (action: any) => void, cart: ProductToCart[] | undefined) => {
   dispatch({ type: "generateSold", payload: true })
-  const ticket = {
-    timestamp: Timestamp.fromDate(new Date()),
-    product: cart
-  }
+  let totalAmountOfCart: number = 0
+
   cart?.map(async (item) => {
     const ref = doc(db, "products", item?.code as string);
-    const docSnap = await getDoc(ref);
-    console.log('docSnap', docSnap.data())
+    totalAmountOfCart = totalAmountOfCart + (Number(item.amount) * Number(item.price))
     const stockSobrante = Number(item.stock) - Number(item.amount)
     if (stockSobrante === 0) {
       await updateDoc(ref, {
-        stock: Number(item.stock) - Number(item.amount),
         active: false
       })
-      await addProductFromCartToTicket(
-        {
-          timestamp: Timestamp.fromDate(new Date()),
-          product: cart
-        }
-      )
-      dispatch({ type: "cleanCart" })
-      dispatch({ type: "resetAmountCart" })
-      dispatch({ type: "generateSold", payload: false })
-
-    } else {
-      await updateDoc(ref, { stock: Number(item.stock) - Number(item.amount) })
-      await addProductFromCartToTicket(
-        {
-          timestamp: Timestamp.fromDate(new Date()),
-          product: cart
-        }
-      )
-      dispatch({ type: "cleanCart" })
-      dispatch({ type: "resetAmountCart" })
-      dispatch({ type: "generateSold", payload: false })
-
     }
-
+    await updateDoc(ref, { stock: Number(item.stock) - Number(item.amount) })
+  })
+  await addProductFromCartToTicket(
+    {
+      timestamp: Timestamp.fromDate(new Date()),
+      product: cart
+    }
+  ).then(r => {
+    dispatch({ type: "cleanCart" })
+    dispatch({ type: "resetAmountCart" })
+    dispatch({ type: "generateSold", payload: false })
+    updatedailySale(totalAmountOfCart)
   })
 }

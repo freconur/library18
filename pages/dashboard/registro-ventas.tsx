@@ -5,11 +5,12 @@ import TableToSell from '../../components/TableToSell/TableToSell';
 import { AuthAction, withUser } from 'next-firebase-auth';
 import { todayDate } from '../../dates/date';
 import { RiLoader4Line } from "react-icons/ri";
-import styles from '../../styles/registtro-ventas.module.css'
+import { dailySale } from '../../reducer/Product';
+
 const RegistroVentas = () => {
   const focusRef = useRef<HTMLInputElement>(null)
   const initialValue = { code: "" }
-  const { addProductRegisterToSell, LibraryData, soldProducts, stateLoader, } = useGlobalContext()
+  const { addProductRegisterToSell, LibraryData, soldProducts, stateLoader} = useGlobalContext()
   const [codeBar, setCodeBar] = useState(initialValue)
   const { productToCart, totalAmountToCart, loaderToSell, productNotFound, generateSold } = LibraryData
   const onChangeCodeProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +34,7 @@ const RegistroVentas = () => {
   return (
     <LayoutDashboard>
       <>
-        <div className='m-3'>
+        <div className='m-3 w-full'>
           <div className='flex items-center justify-end'>
             <h3>{todayDate()}</h3>
           </div>

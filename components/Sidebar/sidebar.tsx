@@ -6,6 +6,11 @@ const Sidebar = () => {
     <div className='h-altura w-[250px] bg-blue-900 p-2'>
       <ul className='capitalize font-semibold  text-slate-200'>
         <li className='my-7'>
+          <Link href="/dashboard/estadisticas">
+            Estadisticas
+          </Link>
+        </li>
+        <li className='my-7'>
           <Link href="/dashboard/registro-de-productos">
             Registro de producto
           </Link>
