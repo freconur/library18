@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
 import { useGlobalContext } from '../../context/GlobalContext'
 
-const cargasStock = () => {
+const CargasStock = () => {
   const { addStockToProductContext, LibraryData } = useGlobalContext()
   const { addStockProduct } = LibraryData
   const initialValue = { code: "" }
@@ -69,4 +69,4 @@ const cargasStock = () => {
   )
 }
 
-export default cargasStock
+export default CargasStock

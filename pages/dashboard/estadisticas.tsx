@@ -4,7 +4,7 @@ import LayoutDashboard from "../../layout/LayoutDashboard"
 import { currentDate } from "../../dates/date"
 
 
-const estadisticas = () => {
+const Estadisticas = () => {
   const { dailySaleContext, LibraryData, dailyTicketContext } = useGlobalContext()
   const { dailySale,dailyTicket, averageTicket} = LibraryData
 
@@ -26,4 +26,4 @@ const estadisticas = () => {
   )
 }
 
-export default estadisticas
+export default Estadisticas
