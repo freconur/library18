@@ -5,6 +5,7 @@ import { currentDate, currentMonth, currentYear } from "../dates/date";
 
 const db = getFirestore(app)
 const YEAR_MONTH = `${currentMonth()}-${currentYear()}/${currentMonth()}-${currentYear()}`
+const yearMonth = `${currentMonth()}-${currentYear()}`
 
 export const addNewProduct = async (dispatch: (action: any) => void, productData: FormProductValues) => {
   await setDoc(doc(db, "products", `${productData.code}`), productData)
@@ -138,7 +139,8 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
 }
 
 export const dailySale = (dispatch: (action: any) => void) => {
-  const dailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0")
+  // const dailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0")
+  const dailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`)
 
   onSnapshot(dailySaleRef, (snapshot) => {
     console.log("amount", snapshot.data()?.amount)
@@ -147,7 +149,9 @@ export const dailySale = (dispatch: (action: any) => void) => {
 }
 
 export const updatedailySale = async (totalAmountOfCart: number) => {
-  const updatedailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0");
+  // const updatedailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0");
+  const updatedailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`);
+
   const docSnap = await getDoc(updatedailySaleRef)
   if (docSnap.exists()) {
     const currentlyDailySale = Number(docSnap.data().amount) + totalAmountOfCart
@@ -160,11 +164,11 @@ export const dailyTicket = async (dispatch: (action: any) => void) => {
   // const q = query(collection(db, "cities")
   const res = query(collection(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${YEAR_MONTH}/${currentDate()}`));
   const docSnap = await getDocs(res)
-  let totalAmountDailySale:number = 0
+  let totalAmountDailySale: number = 0
   docSnap.docs.forEach(ticket => {
     console.log('ticket', ticket.data())
     const productsOfTicket = ticket.data().product
-    productsOfTicket.map((item:ProductToCart) => {
+    productsOfTicket.map((item: ProductToCart) => {
 
       totalAmountDailySale = totalAmountDailySale + (Number(item.amount) * Number(item.price))
     })
@@ -172,8 +176,8 @@ export const dailyTicket = async (dispatch: (action: any) => void) => {
   console.log('totalAmountDailySale', totalAmountDailySale)
   console.log('dailyTicket', docSnap)
   const averageTicket = totalAmountDailySale / docSnap.size
-  dispatch({type:"dailyTicket", payload:docSnap.size})
-  dispatch({type:"averageTicket", payload:averageTicket})
+  dispatch({ type: "dailyTicket", payload: docSnap.size })
+  dispatch({ type: "averageTicket", payload: averageTicket })
   // const dailySaleRef = doc(db, `/db-ventas/xB98zEEqUPU3LXiIf7rQ/${YEAR_MONTH}/${currentDate()}`)
   // const docSnap = await getDoc(dailySaleRef)
   // console.log('dailySaleRef', dailySaleRef)
@@ -205,4 +209,23 @@ export const generateSold = async (dispatch: (action: any) => void, cart: Produc
     dispatch({ type: "generateSold", payload: false })
     updatedailySale(totalAmountOfCart)
   })
+}
+
+export const findProduct = async (codeProduct: string) => {
+  const docRef = doc(db, "products", codeProduct);
+  const docSnap = await getDoc(docRef);
+  return docSnap
+}
+export const addStockToProduct = async (dispatch: (action: any) => void, codeProduct: string) => {
+  if (codeProduct === "") {
+    dispatch({ type: "addStockProduct", payload: null })
+  } else {
+    const product = await findProduct(codeProduct);
+    console.log('data de addStock', product.data())
+    if (product.exists()) {
+      dispatch({ type: "addStockProduct", payload: product.data() })
+    } else {
+      dispatch({ type: "addStockProduct", payload: "no se encontro producto" })
+    }
+  }
 }

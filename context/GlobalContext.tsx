@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useState } from "react";
-import { addNewProduct, dailySale, dailyTicket, deleteProductToCart, findToAddProductCart, generateSold, getBrands, getCategory } from "../reducer/Product";
+import { addNewProduct, addStockToProduct, dailySale, dailyTicket, deleteProductToCart, findToAddProductCart, generateSold, getBrands, getCategory } from "../reducer/Product";
 import { Library, ProductsReducer } from "../reducer/Product.reducer";
 
 interface Props {
@@ -29,7 +29,8 @@ type GlobalContextProps = {
   stateGenerateSoldLoader: (state: boolean) => void,
   loaderRegisterProducts : (state:boolean) => void,
   dailySaleContext:()=>void,
-  dailyTicketContext: () => void
+  dailyTicketContext: () => void,
+  addStockToProductContext: (codeProduct:string) => void
 }
 
 
@@ -96,6 +97,9 @@ export function GlobalcontextProdiver({ children }: Props) {
   const dailyTicketContext = () => {
     dailyTicket(dispatch)
   }
+  const addStockToProductContext = (codeProduct:string) => {
+    addStockToProduct(dispatch, codeProduct)
+  }
   return (
     <GlobalContext.Provider value={{
       LibraryData,
@@ -121,7 +125,8 @@ export function GlobalcontextProdiver({ children }: Props) {
       stateGenerateSoldLoader,
       loaderRegisterProducts,
       dailySaleContext,
-      dailyTicketContext
+      dailyTicketContext,
+      addStockToProductContext
     }}>
       {children}
     </GlobalContext.Provider>

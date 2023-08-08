@@ -20,6 +20,11 @@ const Sidebar = () => {
             registro de ventas
           </Link>
         </li>
+        <li className='my-7'>
+          <Link href="/dashboard/cargas-stock">
+            Cargas de stock
+          </Link>
+        </li>
       </ul>
     </div>
   )

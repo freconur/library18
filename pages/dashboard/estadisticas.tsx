@@ -18,9 +18,9 @@ const estadisticas = () => {
     <LayoutDashboard>
       <div>
         <div>pagina de estadisticas</div>
-        <div>venta del dia : {dailySale && dailySale}</div>
+        <div>venta del dia : {dailySale ? dailySale : 0}</div>
           <div>numero de tickets : {dailyTicket && dailyTicket}</div>
-          <div>ticket promedio : {averageTicket && averageTicket}</div>
+          <div>ticket promedio : {averageTicket ? averageTicket : 0}</div>
       </div>
     </LayoutDashboard>
   )

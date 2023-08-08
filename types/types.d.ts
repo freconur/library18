@@ -21,7 +21,8 @@ interface LibraryAllData {
   loaderRegisterProduct:boolean,
   dailySale?:number,
   dailyTicket?:number,
-  averageTicket?:number
+  averageTicket?:number,
+  addStockProduct?:ProductToCart | string
 }
 interface Brands {
   id?:string
