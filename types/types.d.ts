@@ -62,3 +62,7 @@ interface ProductsFromTicket {
 interface NumberTicket {
   ticket?:number
 }
+
+interface StockProductCharger {
+  stock:number
+}

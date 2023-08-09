@@ -229,3 +229,13 @@ export const addStockToProduct = async (dispatch: (action: any) => void, codePro
     }
   }
 }
+
+export const addStockToProductUpdate = async(codeProduct:ProductToCart, stock:StockProductCharger) => {
+  const ref = doc(db, "products", codeProduct.code as string);
+  const docSnap = await getDoc(ref);
+  const newStock:number = Number(codeProduct.stock) + Number(stock.stock)
+  console.log('newStock',newStock)
+  if(docSnap.exists()) {
+    await updateDoc(ref, {stock:newStock})
+  }
+}
