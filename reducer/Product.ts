@@ -138,27 +138,29 @@ export const addProductFromCartToTicket = async (ticket: Ticket) => {
   }
 }
 
-export const dailySale = (dispatch: (action: any) => void) => {
+export const dailySale = async (dispatch: (action: any) => void) => {
   // const dailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0")
+  // const dailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/`, currentDate() as string)
   const dailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`)
 
-  onSnapshot(dailySaleRef, (snapshot) => {
-    console.log("amount", snapshot.data()?.amount)
-    dispatch({ type: "dailySale", payload: snapshot.data()?.amount })
-  })
-}
+  const docSnap = await getDoc(dailySaleRef);
 
-export const updatedailySale = async (totalAmountOfCart: number) => {
-  // const updatedailySaleRef = doc(db, "/dailysale", "vAWFt15qlNVykhHvNno0");
-  const updatedailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`);
-
-  const docSnap = await getDoc(updatedailySaleRef)
   if (docSnap.exists()) {
-    const currentlyDailySale = Number(docSnap.data().amount) + totalAmountOfCart
-    console.log('updatedailySaleRef', docSnap.data().amount)
-    await updateDoc(updatedailySaleRef, { amount: currentlyDailySale })
+    console.log("Document data:", docSnap.data());
+    dispatch({ type: "dailySale", payload: docSnap.data()?.amount })
+
+  } else {
+    // docSnap.data() will be undefined in this case
+    console.log("No such document!");
   }
+
+  // onSnapshot(dailySaleRef, (snapshot) => {
+  //   console.log("amount", snapshot.data()?.amount)
+  //   dispatch({ type: "dailySale", payload: snapshot.data()?.amount })
+  // })
 }
+
+
 
 export const dailyTicket = async (dispatch: (action: any) => void) => {
   // const q = query(collection(db, "cities")
@@ -211,6 +213,23 @@ export const generateSold = async (dispatch: (action: any) => void, cart: Produc
   })
 }
 
+export const updatedailySale = async (totalAmountOfCart: number) => {
+  const updatedailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`);
+  const docSnap = await getDoc(updatedailySaleRef)
+  if (docSnap.exists()) {
+    const currentlyDailySale = Number(docSnap.data().amount) + totalAmountOfCart
+    await updateDoc(updatedailySaleRef, { amount: currentlyDailySale })
+  } else {
+    await setDoc(doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}`, currentDate()), { amount: 0 });
+    const updatedailySaleRef = doc(db, `/dailysale/vAWFt15qlNVykhHvNno0/${yearMonth}/${currentDate()}`);
+    const docSnap = await getDoc(updatedailySaleRef)
+    if (docSnap.exists()) {
+      const currentlyDailySale = Number(docSnap.data().amount) + totalAmountOfCart
+      await updateDoc(updatedailySaleRef, { amount: currentlyDailySale })
+    }
+  }
+}
+
 export const findProduct = async (codeProduct: string) => {
   const docRef = doc(db, "products", codeProduct);
   const docSnap = await getDoc(docRef);
@@ -230,12 +249,12 @@ export const addStockToProduct = async (dispatch: (action: any) => void, codePro
   }
 }
 
-export const addStockToProductUpdate = async(codeProduct:ProductToCart, stock:StockProductCharger) => {
+export const addStockToProductUpdate = async (codeProduct: ProductToCart, stock: StockProductCharger) => {
   const ref = doc(db, "products", codeProduct.code as string);
   const docSnap = await getDoc(ref);
-  const newStock:number = Number(codeProduct.stock) + Number(stock.stock)
-  console.log('newStock',newStock)
-  if(docSnap.exists()) {
-    await updateDoc(ref, {stock:newStock})
+  const newStock: number = Number(codeProduct.stock) + Number(stock.stock)
+  console.log('newStock', newStock)
+  if (docSnap.exists()) {
+    await updateDoc(ref, { stock: newStock })
   }
 }

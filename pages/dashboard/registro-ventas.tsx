@@ -5,7 +5,6 @@ import TableToSell from '../../components/TableToSell/TableToSell';
 import { AuthAction, withUser } from 'next-firebase-auth';
 import { todayDate } from '../../dates/date';
 import { RiLoader4Line } from "react-icons/ri";
-import { dailySale } from '../../reducer/Product';
 
 const RegistroVentas = () => {
   const focusRef = useRef<HTMLInputElement>(null)
