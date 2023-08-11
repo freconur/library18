@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useState } from "react";
-import { addNewProduct, addStockToProduct, dailySale, dailyTicket, deleteProductToCart, findToAddProductCart, generateSold, getBrands, getCategory } from "../reducer/Product";
+import { addNewProduct, addStockToProduct, addStockToProductUpdate, dailySale, dailyTicket, deleteProductToCart, findToAddProductCart, generateSold, getBrands, getCategory } from "../reducer/Product";
 import { Library, ProductsReducer } from "../reducer/Product.reducer";
 
 interface Props {
@@ -27,10 +27,13 @@ type GlobalContextProps = {
   soldProducts: (cart: ProductToCart[] | undefined) => void,
   stateLoader: (state: boolean) => void,
   stateGenerateSoldLoader: (state: boolean) => void,
-  loaderRegisterProducts : (state:boolean) => void,
-  dailySaleContext:()=>void,
+  loaderRegisterProducts: (state: boolean) => void,
+  dailySaleContext: () => void,
   dailyTicketContext: () => void,
-  addStockToProductContext: (codeProduct:string) => void
+  addStockToProductContext: (codeProduct: string) => void,
+  stateLoaderFromChargerStock: (state: boolean) => void,
+  stateLoaderFromChargerStockAdd: (state: boolean) => void,
+  addStockToProductUpdateContext: (codeProduct: ProductToCart, stock: StockProductCharger) => void
 }
 
 
@@ -88,17 +91,26 @@ export function GlobalcontextProdiver({ children }: Props) {
   const stateGenerateSoldLoader = (state: boolean) => {
     dispatch({ type: "generateSold", payload: state })
   }
-  const loaderRegisterProducts = (state:boolean) => {
-    dispatch({type:"loaderRegisterProduct", payload:state})
-  } 
+  const loaderRegisterProducts = (state: boolean) => {
+    dispatch({ type: "loaderRegisterProduct", payload: state })
+  }
   const dailySaleContext = () => {
     dailySale(dispatch)
   }
   const dailyTicketContext = () => {
     dailyTicket(dispatch)
   }
-  const addStockToProductContext = (codeProduct:string) => {
+  const addStockToProductContext = (codeProduct: string) => {
     addStockToProduct(dispatch, codeProduct)
+  }
+  const stateLoaderFromChargerStock = (state: boolean) => {
+    dispatch({ type: "loaderChargerStock", payload: state })
+  }
+  const stateLoaderFromChargerStockAdd = (state: boolean) => {
+    dispatch({ type: "loaderChargerStockAdd", payload: state })
+  }
+  const addStockToProductUpdateContext = (codeProduct: ProductToCart, stock: StockProductCharger) => {
+    addStockToProductUpdate(dispatch, codeProduct, stock)
   }
   return (
     <GlobalContext.Provider value={{
@@ -126,7 +138,10 @@ export function GlobalcontextProdiver({ children }: Props) {
       loaderRegisterProducts,
       dailySaleContext,
       dailyTicketContext,
-      addStockToProductContext
+      addStockToProductContext,
+      stateLoaderFromChargerStock,
+      addStockToProductUpdateContext,
+      stateLoaderFromChargerStockAdd
     }}>
       {children}
     </GlobalContext.Provider>

@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
 import { useGlobalContext } from '../../context/GlobalContext'
-import { table } from 'console'
 import { addStockToProductUpdate } from '../../reducer/Product'
+import { RiLoader4Line } from "react-icons/ri";
+import TableToSell from '../../components/TableToSell/TableToSell';
 
 const CargasStock = () => {
   const focusRef = useRef<HTMLInputElement>(null)
   const focusRefStock = useRef<HTMLInputElement>(null)
-  const { addStockToProductContext, LibraryData } = useGlobalContext()
-  const { addStockProduct } = LibraryData
+  const { addStockToProductContext, LibraryData, stateLoaderFromChargerStock, addStockToProductUpdateContext, stateLoaderFromChargerStockAdd } = useGlobalContext()
+  const { addStockProduct, loaderChargerStock, loaderChargerStockAdd } = LibraryData
   const initialValue = { code: "" }
   const initialValueStockCharger = { stock: 0 }
   const [codeProduct, setCodeProduct] = useState(initialValue)
@@ -24,11 +25,12 @@ const CargasStock = () => {
     if (focusRef.current) {
       focusRef.current.focus();
     }
-    
+
     if (codeProduct.code.length === 12 || codeProduct.code.length === 13) {
       setCodeProduct(codeProduct)
+      stateLoaderFromChargerStock(true)
       addStockToProductContext(codeProduct.code)
-      if(focusRefStock.current) {
+      if (focusRefStock.current) {
         focusRefStock.current.focus();
       }
     }
@@ -40,26 +42,26 @@ const CargasStock = () => {
     }
   }, [codeProduct.code])
 
-  const handleCargaStock = (e:React.ChangeEvent<HTMLInputElement>) => {
-    console.log('holis')
+  const handleCargaStock = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStockProductToCharger({
       ...stockProductToCharger,
       [e.target.name]: e.target.value
     })
   }
   const testEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('key', e.key)
+    // console.log('key', e.key)
     if (e.key === 'Enter') {
       e.preventDefault()
     }
   }
-  const handleAddStock = (addStockProduct:ProductToCart,stockProductToCharger:StockProductCharger) => {
-    console.log('agregando stock')
-    addStockToProductUpdate(addStockProduct,stockProductToCharger)
+  const handleAddStock = (addStockProduct: ProductToCart, stockProductToCharger: StockProductCharger) => {
+    stateLoaderFromChargerStockAdd(true)
+    addStockToProductUpdateContext(addStockProduct, stockProductToCharger)
+
+    // addStockToProductUpdate(addStockProduct, stockProductToCharger)
     setCodeProduct(initialValue)
     setStockProductToCharger(initialValueStockCharger)
   }
-  console.log('stockProductToCharger',stockProductToCharger)
   return (
     <LayoutDashboard>
       <div className='w-full m-3'>
@@ -70,11 +72,26 @@ const CargasStock = () => {
           </div>
         </form>
         <div>
+          {loaderChargerStock
+            &&
+            <div className="flex w-full mt-5 items-center m-auto justify-center">
+              <RiLoader4Line className="animate-spin text-3xl text-blue-500 " />
+              <p className="text-gray-400">buscando producto...</p>
+            </div>
+          }
+
           {addStockProduct
             &&
             typeof addStockProduct === "object"
             &&
             <>
+              {loaderChargerStockAdd
+                &&
+                <div className="flex w-full mt-5 items-center m-auto justify-center">
+                  <RiLoader4Line className="animate-spin text-3xl text-blue-500 " />
+                  <p className="text-gray-400">agregando carga...</p>
+                </div>
+              }
               <div className='rounded-lg shadow max-cs:mr-0 mt-5 overflow-auto'>
                 <table className='w-full rounded-lg overflow-hidden  border-[1px] '>
                   <thead className='bg-pink-600 border-b-2 text-left border-gray-200'>
@@ -97,7 +114,7 @@ const CargasStock = () => {
                   </tbody>
                 </table>
               </div>
-              <button onClick={() => handleAddStock(addStockProduct,stockProductToCharger)} className='w-full capitalize text-slate-100 font-semibold h-[40px] rounded-lg bg-blue-500 mt-5'>agregar nueva carga de stock</button>
+              <button onClick={() => handleAddStock(addStockProduct, stockProductToCharger)} className='w-full capitalize text-slate-100 font-semibold h-[40px] rounded-lg bg-blue-500 mt-5'>agregar nueva carga de stock</button>
             </>
           }
 

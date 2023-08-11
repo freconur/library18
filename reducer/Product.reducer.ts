@@ -8,14 +8,16 @@ type LibraryData =
   | { type: "cleanCart" }
   | { type: "resetAmountCart" }
   | { type: "currentlyDate" }
-  | { type: "productNotFound"; payload: string}
-  | { type: "loaderToSell"; payload:boolean }
-  | { type: "generateSold"; payload:boolean }
-  | { type: "loaderRegisterProduct"; payload:boolean }
-  | { type: "dailySale"; payload:number }
-  | { type: "dailyTicket"; payload:number }
-  | { type: "averageTicket"; payload:number }
-  | { type: "addStockProduct"; payload:ProductToCart | string}
+  | { type: "productNotFound"; payload: string }
+  | { type: "loaderToSell"; payload: boolean }
+  | { type: "generateSold"; payload: boolean }
+  | { type: "loaderRegisterProduct"; payload: boolean }
+  | { type: "dailySale"; payload: number }
+  | { type: "dailyTicket"; payload: number }
+  | { type: "averageTicket"; payload: number }
+  | { type: "addStockProduct"; payload: ProductToCart | string }
+  | { type: "loaderChargerStock"; payload: boolean }
+  | { type: "loaderChargerStockAdd"; payload: boolean }
 
 export const Library = {
   newProduct: {} as FormProductValues,
@@ -23,47 +25,61 @@ export const Library = {
   category: [] as Category[],
   productToCart: [] as ProductToCart[],
   totalAmountToCart: 0 as number,
-  currentlyDate: "" as string,
+currentlyDate: "" as string,
   loaderToSell: false as boolean,
   generateSold: false as boolean,
-  productNotFound:"" as string,
-  loaderRegisterProduct:false as boolean,
+  productNotFound: "" as string,
+  loaderRegisterProduct: false as boolean,
   dailySale: 0 as number,
   dailyTicket: 0 as number,
   averageTicket: 0 as number,
-  addStockProduct: "" || {} as ProductToCart | string
+  addStockProduct: "" || {} as ProductToCart | string,
+  loaderChargerStock: false as boolean,
+  loaderChargerStockAdd:false as boolean
 }
 
 export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
   switch (action.type) {
-    case "addStockProduct" :{
+    case "loaderChargerStockAdd":{
       return {
         ...state,
-        addStockProduct:action.payload
+        loaderChargerStockAdd:action.payload
       }
     }
-    case "averageTicket":{
+    case "loaderChargerStock": {
       return {
         ...state,
-        averageTicket:action.payload
+        loaderChargerStock: action.payload
       }
     }
-    case "dailyTicket":{
+    case "addStockProduct": {
       return {
         ...state,
-        dailyTicket:action.payload
+        addStockProduct: action.payload
       }
     }
-    case "dailySale":{
+    case "averageTicket": {
       return {
         ...state,
-        dailySale:action.payload
+        averageTicket: action.payload
       }
     }
-    case "loaderRegisterProduct":{
+    case "dailyTicket": {
       return {
         ...state,
-        loaderRegisterProduct:action.payload
+        dailyTicket: action.payload
+      }
+    }
+    case "dailySale": {
+      return {
+        ...state,
+        dailySale: action.payload
+      }
+    }
+    case "loaderRegisterProduct": {
+      return {
+        ...state,
+        loaderRegisterProduct: action.payload
       }
     }
     case "newProduct": {
@@ -115,26 +131,26 @@ export const ProductsReducer = (state: LibraryAllData, action: LibraryData) => {
         currentlyDate: date
       }
     }
-    case "loaderToSell":{
+    case "loaderToSell": {
       return {
         ...state,
         loaderToSell: action.payload
       }
     }
     case "productNotFound": {
-      if(action.payload === "not found") {
+      if (action.payload === "not found") {
         return {
           ...state,
-          productNotFound:"no se encontro producto"
+          productNotFound: "no se encontro producto"
         }
       } else {
         return {
           ...state,
-          productNotFound:""
+          productNotFound: ""
         }
       }
     }
-    case "generateSold":{
+    case "generateSold": {
       return {
         ...state,
         generateSold: action.payload

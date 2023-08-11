@@ -240,21 +240,24 @@ export const addStockToProduct = async (dispatch: (action: any) => void, codePro
     dispatch({ type: "addStockProduct", payload: null })
   } else {
     const product = await findProduct(codeProduct);
-    console.log('data de addStock', product.data())
     if (product.exists()) {
       dispatch({ type: "addStockProduct", payload: product.data() })
+      dispatch({ type: "loaderChargerStock", payload: false })
+
     } else {
       dispatch({ type: "addStockProduct", payload: "no se encontro producto" })
     }
   }
 }
 
-export const addStockToProductUpdate = async (codeProduct: ProductToCart, stock: StockProductCharger) => {
+export const addStockToProductUpdate = async (dispatch: (action: any) => void, codeProduct: ProductToCart, stock: StockProductCharger) => {
   const ref = doc(db, "products", codeProduct.code as string);
   const docSnap = await getDoc(ref);
   const newStock: number = Number(codeProduct.stock) + Number(stock.stock)
-  console.log('newStock', newStock)
   if (docSnap.exists()) {
     await updateDoc(ref, { stock: newStock })
+      .then(r => {
+        dispatch({ type: "loaderChargerStockAdd", payload: false })
+      })
   }
 }

@@ -22,7 +22,9 @@ interface LibraryAllData {
   dailySale?:number,
   dailyTicket?:number,
   averageTicket?:number,
-  addStockProduct?:ProductToCart | string
+  addStockProduct?:ProductToCart | string,
+  loaderChargerStock:boolean,
+  loaderChargerStockAdd:boolean
 }
 interface Brands {
   id?:string
