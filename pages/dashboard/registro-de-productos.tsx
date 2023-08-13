@@ -15,6 +15,7 @@ const initialStateValues: FormProductValues = {
   price: "",
   category: "",
   brand: "",
+  stock:0
 }
 const RegistroDeProductos = () => {
   const focusRef = useRef<HTMLInputElement>(null)

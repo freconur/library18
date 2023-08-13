@@ -22,9 +22,9 @@ export const onValidate = (form:FormProductValues) => {
     errors.price = 'el campo precio es necesario';
     isError = true
   }
-  if(!form.stock?.trim()){
-    errors.stock = 'el campo stock es necesario';
-    isError = true
-  }
+  // if(!form.stock?.trim()){
+  //   errors.stock = 'el campo stock es necesario';
+  //   isError = true
+  // }
   return isError ? errors : null
 }
