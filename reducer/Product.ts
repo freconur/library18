@@ -8,6 +8,14 @@ const YEAR_MONTH = `${currentMonth()}-${currentYear()}/${currentMonth()}-${curre
 const yearMonth = `${currentMonth()}-${currentYear()}`
 
 export const addNewProduct = async (dispatch: (action: any) => void, productData: FormProductValues) => {
+
+  const docRef = doc(db, "products", productData.code as string); // busco en la base de datos
+    // const docSnap = await getDoc(docRef);
+    // const prod = docSnap?.data()
+
+    // if(prod) {
+    //   console.log('ya existe el producto')
+    // }
   await setDoc(doc(db, "products", `${productData.code}`), productData)
     .then(r => {
       dispatch({ type: "newProduct", payload: productData })
