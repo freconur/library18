@@ -1,5 +1,5 @@
 
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, setDoc, updateDoc } from "firebase/firestore";
 import { app } from "../firebase/firebase.config";
 import { currentDate, currentMonth, currentYear } from "../dates/date";
 
@@ -26,12 +26,24 @@ export const addNewProduct = async (dispatch: (action: any) => void, productData
 export const getBrands = (dispatch: (action: any) => void) => {
   const res = collection(db, `marcas`);
 
+  // const q = query(res, orderBy("name"));
+
   onSnapshot(res, (snapshot) => {
     const brands: Brands[] = [];
     snapshot.docs.forEach((doc) => {
       brands.push({ ...doc.data(), id: doc.id });
     });
-    dispatch({ type: "brands", payload: brands })
+    const rta = brands.sort((a, b) => {
+      if (`${a.name}` > `${b.name}`) {
+        return 1;
+      }
+      if (`${a.name}` < `${b.name}`) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    })
+    dispatch({ type: "brands", payload: rta })
   })
 }
 export const getCategory = (dispatch: (action: any) => void) => {
@@ -42,7 +54,17 @@ export const getCategory = (dispatch: (action: any) => void) => {
     snapshot.docs.forEach((doc) => {
       category.push({ ...doc.data(), id: doc.id });
     });
-    dispatch({ type: "category", payload: category })
+    const rta = category.sort((a, b) => {
+      if (`${a.name}` > `${b.name}`) {
+        return 1;
+      }
+      if (`${a.name}` < `${b.name}`) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    })
+    dispatch({ type: "category", payload: rta })
   })
 }
 
@@ -54,9 +76,16 @@ export const updateCategory = async (category: Category | undefined) => {
   const ref = doc(db, "categorias", category?.id as string);
   await updateDoc(ref, { name: category?.name })
 }
+export const updateBrand = async (brand: Brands | undefined) => {
+  const ref = doc(db, "marcas", brand?.id as string);
+  await updateDoc(ref, { name: brand?.name })
+}
 
 export const deleteCategory = async (category: Category | undefined) => {
   await deleteDoc(doc(db, "categorias", category?.id as string));
+}
+export const deleteBrand = async (brand: Brands | undefined) => {
+  await deleteDoc(doc(db, "marcas", brand?.id as string));
 }
 export const addNewBrand = async (brandData: Brand) => {
   await addDoc(collection(db, "marcas"), brandData);

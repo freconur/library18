@@ -3,7 +3,7 @@ import { useGlobalContext } from '../context/GlobalContext'
 
 const useFormRegisterProduct = (formValues: FormProductValues, onValidate: (form: FormProductValues) => FormProductValues | null) => {
   const { addProduct, loaderRegisterProducts } = useGlobalContext()
-  const [form, setForm] = useState<FormProductValues>({})
+  const [form, setForm] = useState<FormProductValues>(formValues)
   const [loading, setLoading] = useState<boolean | Promise<boolean>>(false)
   const [error, setError] = useState<FormProductValues | null>(null)
 

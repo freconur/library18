@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 import styles from '../../styles/AddNewCategoryModal.module.css'
-import { addNewCategory, updateCategory } from '../../reducer/Product';
+import { addNewCategory, updateBrand, updateCategory } from '../../reducer/Product';
 import { useGlobalContext } from '../../context/GlobalContext';
 interface Props {
   // showModalUpdateCategory: boolean,
@@ -11,24 +11,24 @@ interface Props {
 
 const UpdateBrandsModal = ({  }: Props) => {
   const { LibraryData, showUpdateBrands } = useGlobalContext()
-  const { category } = LibraryData
-  const [updateCategoryValues, setUpdateCategoryValue] = useState<Category>({})
+  const { brands} = LibraryData
+  const [updateBrandsValues, setUpdateBrandsValue] = useState<Brands>({})
   let container;
   if (typeof window !== "undefined") {
     container = document.getElementById("portal-modal");
   }
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setUpdateCategoryValue({
-      ...updateCategoryValues,
+    setUpdateBrandsValue({
+      ...updateBrandsValues,
       [e.target.name]: e.target.value
     })
   }
   const handleSubmit = () => {
-    // const findCategory = category?.find((cat)=> cat.id === newCategoryValue.id)
-    // console.log('findCategory',findCategory)
-    if(updateCategoryValues && updateCategoryValues) {
-      updateCategory({id:updateCategoryValues.id, name:updateCategoryValues.name})
+    // const findBrands = Brands?.find((cat)=> cat.id === newBrandsValue.id)
+    // console.log('findBrands',findBrands)
+    if(updateBrandsValues && updateBrandsValues) {
+      updateBrand({id:updateBrandsValues.id, name:updateBrandsValues.name})
     }
   }
   console.log('LibraryData',LibraryData)
@@ -39,10 +39,10 @@ const UpdateBrandsModal = ({  }: Props) => {
         <div className={styles.containerDelete}>
           <div>
             <div>
-              <h3 className=''>selecciona la categoria a editar </h3>
+              <h3 className=''>selecciona la marca a editar </h3>
               <select className='w-full h-[40px] rounded-lg' name="id" onChange={handleChangeValue}>
-                <option value="">categoria</option>
-                {category?.map(cat => {
+                <option value="">marcas</option>
+                {brands?.map(cat => {
                   return (
                     <option id={cat.id} key={cat.id}  value={cat.id}>{cat.name}</option>
                   )
@@ -50,13 +50,13 @@ const UpdateBrandsModal = ({  }: Props) => {
               </select>
             </div>
             <div>
-              <label className={styles.title}>nombre de categoria</label>
-              <input name="name" disabled={updateCategoryValues.id ? false : true} placeholder={updateCategoryValues.name} onChange={handleChangeValue} className={styles.newCategory} type="text" />
+              <label className={styles.title}>nombre de marca</label>
+              <input name="name" disabled={updateBrandsValues.id ? false : true} placeholder={updateBrandsValues.name} onChange={handleChangeValue} className={styles.newCategory} type="text" />
             </div>
           </div>
           <div className={styles.buttonContainer}>
             <button onClick={showUpdateBrands} className={styles.buttonCancel}>cancelar</button>
-            <button onClick={() => { showUpdateBrands(); handleSubmit() }} className={styles.buttonDelete}>agregar</button>
+            <button onClick={() => { showUpdateBrands(); handleSubmit() }} className={styles.buttonDelete}>actualizar</button>
           </div>
         </div>
       </div>,

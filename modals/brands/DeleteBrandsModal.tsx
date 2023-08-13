@@ -1,30 +1,30 @@
 import React, { useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 import styles from '../../styles/AddNewCategoryModal.module.css'
-import { addNewCategory, deleteCategory, updateCategory } from '../../reducer/Product';
+import { deleteBrand } from '../../reducer/Product';
 import { useGlobalContext } from '../../context/GlobalContext';
 
 
 const DeleteBrandsModal
   = () => {
     const { LibraryData, showDeleteBrands } = useGlobalContext()
-    const [deleteCategoryValues, setDeleteCategoryValues] = useState<Category>({})
+    const [deleteBrandValues, setDeleteBrandValues] = useState<Brands>({})
     let container;
     if (typeof window !== "undefined") {
       container = document.getElementById("portal-modal");
     }
 
     const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setDeleteCategoryValues({
-        ...deleteCategoryValues,
+      setDeleteBrandValues({
+        ...deleteBrandValues,
         [e.target.name]: e.target.value
       })
     }
     const handleSubmit = () => {
-      // const findCategory = category?.find((cat)=> cat.id === newCategoryValue.id)
-      // console.log('findCategory',findCategory)
-      if (deleteCategoryValues && deleteCategoryValues) {
-        deleteCategory({ id: deleteCategoryValues.id, name: deleteCategoryValues.name })
+      // const findBrand = Brand?.find((cat)=> cat.id === newBrandValue.id)
+      // console.log('findBrand',findBrand)
+      if (deleteBrandValues && deleteBrandValues) {
+        deleteBrand({ id: deleteBrandValues.id, name: deleteBrandValues.name })
       }
     }
     return container
@@ -34,10 +34,10 @@ const DeleteBrandsModal
           <div className={styles.containerDelete}>
             <div>
               <div className='w-full'>
-                <h3 className='mb-3'>selecciona la categoria a eliminar </h3>
+                <h3 className='mb-3'>selecciona la marca a eliminar </h3>
                 <select className='w-full my-4 h-[40px] rounded-lg' name="id" onChange={handleChangeValue}>
                   <option value="">categoria</option>
-                  {LibraryData.category?.map(cat => {
+                  {LibraryData.brands?.map(cat => {
                     return (
                       <option id={cat.id} key={cat.id} value={cat.id}>{cat.name}</option>
                     )
