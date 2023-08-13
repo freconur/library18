@@ -65,6 +65,7 @@ export const findToAddProductCart = async (dispatch: (action: any) => void, code
     const prod = docSnap?.data()
 
     if (docSnap.exists()) {
+      console.log('existe')
       dispatch({ type: "productNotFound" })
 
       dispatch({ type: "loaderToSell", payload: true })

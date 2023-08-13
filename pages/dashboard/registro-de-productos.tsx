@@ -15,7 +15,6 @@ const initialStateValues: FormProductValues = {
   price: "",
   category: "",
   brand: "",
-  stock:""
 }
 const RegistroDeProductos = () => {
   const focusRef = useRef<HTMLInputElement>(null)
@@ -79,7 +78,7 @@ const RegistroDeProductos = () => {
               </div>
               }
             </div>
-            <div>
+            {/* <div>
               <label className={styles.labelForm}>Stock</label>
               <input onChange={handleProductValues} value={form.stock} name="stock" className={styles.inputCode} type="text" />
               {error?.stock && 
@@ -87,7 +86,7 @@ const RegistroDeProductos = () => {
                  *{error?.stock}
               </div>
               }
-            </div>
+            </div> */}
             <div className=''>
               <div>
                 <label className={styles.labelForm}>Marca de producto</label>

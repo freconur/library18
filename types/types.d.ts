@@ -5,7 +5,7 @@ interface FormProductValues {
   price?:string,
   category?:string,
   brand?:string,
-  stock?:string
+  stock?:number
 }
 
 interface LibraryAllData {
