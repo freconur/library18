@@ -22,7 +22,8 @@ const RegistroVentas = () => {
     if (focusRef.current) {
       focusRef.current.focus();
     }
-    if (codeBar.code.length === 12 || codeBar.code.length === 13) {
+    if (codeBar.code.length === 13) {
+      // if (codeBar.code.length === 12 || codeBar.code.length === 13) {
       setCodeBar(codeBar)
       stateLoader(true)
       addProductRegisterToSell(codeBar.code as string, productToCart)
