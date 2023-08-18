@@ -10,12 +10,12 @@ const yearMonth = `${currentMonth()}-${currentYear()}`
 export const addNewProduct = async (dispatch: (action: any) => void, productData: FormProductValues) => {
 
   const docRef = doc(db, "products", productData.code as string); // busco en la base de datos
-    // const docSnap = await getDoc(docRef);
-    // const prod = docSnap?.data()
+  // const docSnap = await getDoc(docRef);
+  // const prod = docSnap?.data()
 
-    // if(prod) {
-    //   console.log('ya existe el producto')
-    // }
+  // if(prod) {
+  //   console.log('ya existe el producto')
+  // }
   await setDoc(doc(db, "products", `${productData.code}`), productData)
     .then(r => {
       dispatch({ type: "newProduct", payload: productData })
@@ -286,6 +286,19 @@ export const addStockToProduct = async (dispatch: (action: any) => void, codePro
       dispatch({ type: "addStockProduct", payload: "no se encontro producto" })
     }
   }
+}
+
+export const searchProductByDescription = async () => {
+  console.log('seach', "estamos buscando")
+  const res = query(collection(db, `/products`));
+  const docSnap = await getDocs(res)
+  const allProducts: ProductToCart[] = []
+  docSnap.docs.forEach(doc => {
+    allProducts.push({ ...doc.data() });
+  })
+
+  // console.log('total de productos',docSnap.size)
+  // console.log('total de productos',docSnap)
 }
 
 export const addStockToProductUpdate = async (dispatch: (action: any) => void, codeProduct: ProductToCart, stock: StockProductCharger) => {

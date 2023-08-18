@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import LayoutDashboard from '../../layout/LayoutDashboard'
 import { useGlobalContext } from '../../context/GlobalContext'
-import { addStockToProductUpdate } from '../../reducer/Product'
 import { RiLoader4Line } from "react-icons/ri";
-import TableToSell from '../../components/TableToSell/TableToSell';
 
 const CargasStock = () => {
   const focusRef = useRef<HTMLInputElement>(null)

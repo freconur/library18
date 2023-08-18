@@ -17,12 +17,17 @@ const Sidebar = () => {
         </li>
         <li className='my-7'>
           <Link href="/dashboard/registro-ventas">
-            registro de ventas
+            Punto de ventas
           </Link>
         </li>
         <li className='my-7'>
           <Link href="/dashboard/cargas-stock">
             Cargas de stock
+          </Link>
+        </li>
+        <li className='my-7'>
+          <Link href="/dashboard/productos">
+            Mis productos
           </Link>
         </li>
       </ul>
